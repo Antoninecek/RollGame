@@ -1,4 +1,4 @@
-import { IDictionary } from "./Interfaces";
+import { IdGenerator, IDictionary } from "./Interfaces";
 
 class Dice {
 
@@ -8,7 +8,7 @@ class Dice {
 
     constructor(sides: DiceSymbol[]) {
         this.Sides = sides;
-        this.Id = GenerateDiceId();
+        this.Id = IdGenerator.generate();
         this.TopSide = 0;
     }
 
@@ -20,9 +20,6 @@ class Dice {
         return this.Sides[this.TopSide].Value;
     }
 }
-
-let diceId = 1;
-let GenerateDiceId = () => diceId++;
 
 export class DiceSymbol {
 

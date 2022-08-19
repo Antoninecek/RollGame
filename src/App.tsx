@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import BoardComponent from './BoardComponent';
 import Board from './Board';
-import Dice, { DiceSymbol, DiceSymbolTypes, GenerateBaseNumericDice } from './Dice';
-import Shop, { GenerateFaceMultiplier2ShopItem, GeneratePassiveRollMultiplier2ShopItem, ShopItem } from './Shop';
+import { GenerateBaseNumericDice } from './Dice';
+import Shop, { ShopItem } from './Shop';
+import { StandardShopLevels } from './Configs';
 
 export interface BoardContextInterface {
     board: Board;
@@ -35,7 +35,7 @@ function App() {
         }
         const board = new Board([...dics]);
         setBoard(board);
-        const shop = new Shop([], '1');
+        const shop = new Shop(StandardShopLevels);
         shop.Items = shop.createItems(rolls, 10);
         setShop(shop);
     }, [])
