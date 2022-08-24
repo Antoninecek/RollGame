@@ -1,5 +1,6 @@
-import { Modal } from 'react-bootstrap';
-import React, { Fragment, useContext, useState } from 'react'
+// import { Modal } from 'react-bootstrap';
+import { Grid, Modal, Typography } from '@mui/material';
+import { Fragment, useContext, useState } from 'react'
 import { BoardContext } from './App'
 import DiceComponent from './DiceComponent';
 import ShopComponent from './ShopComponent';
@@ -10,23 +11,24 @@ const BoardComponent = () => {
     const [shopOpen, setShopOpen] = useState<boolean>(false);
 
     return (
-        <div className='board d-flex align-items-start flex-column'>
-            <Modal show={shopOpen} onHide={() => setShopOpen(false)} >
-                <Modal.Body>
+        <Grid container>
+            <Modal open={shopOpen} onClose={() => setShopOpen(false)} >
+                <Fragment>
                     <ShopComponent />
-                </Modal.Body>
+                </Fragment>
             </Modal>
-            <div className='dicelist d-flex justify-content-center flex-wrap'>
+            <Grid item>
                 {boardContext?.board.DiceList.map(x => <DiceComponent key={x.Id} dice={x} />)}
-            </div>
-            <div className='mt-auto p-2'>
+            </Grid>
+            <Grid item>
                 <button onClick={() => boardContext!.rollAll()}>roll</button>
-                <button onClick={() => boardContext!.addDice()}>add dice</button>
-                <span>{boardContext?.board.DiceValue}</span>
+                {/* <button onClick={() => boardContext!.addDice()}>add dice</button> */}
+                <span>{boardContext?.board.DiceValue}</span>/
                 <span className='m-2'>{boardContext?.userPoints}</span>
                 <button onClick={() => setShopOpen(true)}>shop</button>
-            </div>
-        </div>
+                <div>{boardContext.rolls}</div>
+            </Grid>
+        </Grid>
     )
 }
 

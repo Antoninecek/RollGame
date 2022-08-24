@@ -19,16 +19,20 @@ class Dice {
     getValue() {
         return this.Sides[this.TopSide].Value;
     }
+
+    getIcon(): string {
+        return this.Sides[this.TopSide].Icon;
+    }
 }
 
 export class DiceSymbol {
 
     Type: DiceSymbolTypes;
-    Value: number;
+    Value: number = 0;
+    Icon: string = '';
 
-    constructor(type: DiceSymbolTypes, value: number) {
+    constructor(type: DiceSymbolTypes) {
         this.Type = type;
-        this.Value = value;
     }
 }
 
@@ -36,15 +40,6 @@ export enum DiceSymbolTypes {
     numeric, multiplier
 }
 
-export const GenerateBaseNumericDice = () => new Dice([{ Type: DiceSymbolTypes.numeric, Value: 1 }, { Type: DiceSymbolTypes.numeric, Value: 2 }, { Type: DiceSymbolTypes.numeric, Value: 3 }, { Type: DiceSymbolTypes.numeric, Value: 4 }, { Type: DiceSymbolTypes.numeric, Value: 5 }, { Type: DiceSymbolTypes.numeric, Value: 6 }])
-
-export const DiceIcons: IDictionary<string> = {
-    '1': 'bi bi-dice-1',
-    '2': 'bi bi-dice-2',
-    '3': 'bi bi-dice-3',
-    '4': 'bi bi-dice-4',
-    '5': 'bi bi-dice-5',
-    '6': 'bi bi-dice-6',
-}
+export const GenerateBaseNumericDice = () => new Dice([{ Type: DiceSymbolTypes.numeric, Value: 1, Icon: 'dice-one' }, { Type: DiceSymbolTypes.numeric, Value: 2, Icon: 'dice-two' }, { Type: DiceSymbolTypes.numeric, Value: 3, Icon: 'dice-three' }, { Type: DiceSymbolTypes.numeric, Value: 4, Icon: 'dice-four' }, { Type: DiceSymbolTypes.numeric, Value: 5, Icon: 'dice-five' }, { Type: DiceSymbolTypes.numeric, Value: 6, Icon: 'dice-six' }])
 
 export default Dice

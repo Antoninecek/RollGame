@@ -1,6 +1,21 @@
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Grid } from '@mui/material';
 import React, { useContext } from 'react';
 import { BoardContext, BoardContextInterface } from './App';
 import { ShopItem } from './Shop';
+
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const ShopComponent = () => {
 
@@ -9,18 +24,19 @@ const ShopComponent = () => {
     let id: number = 1;
 
     return (
-        <div className='d-flex'>
-            <div>
+        <Grid container sx={style}>
+            <Grid item>
                 {boardContext?.shop.Items.map(x => <ShopItemComponent key={x.Id} item={x} />)}
-            </div>
-            <div>
+            </Grid>
+            <Grid item>
+                <div>{boardContext.shop.Level}</div>
                 <button onClick={() => boardContext.rollShop()}>roll shop</button>
-            </div>
-        </div>
+            </Grid>
+        </Grid>
     )
 }
 
-interface ShopItemComponentPropsInterface {
+export interface ShopItemComponentPropsInterface {
     item: ShopItem,
 }
 
@@ -38,12 +54,19 @@ const ShopItemComponent = (props: ShopItemComponentPropsInterface) => {
 
     if (!props.item.CanBuy) {
         return (
-            <div className="bi bi-lock-fill"></div>
+            <div>
+                <FontAwesomeIcon icon={'lock'} />
+            </div>
         )
     }
 
     return (
-        <div onClick={() => buy()}>{`${props.item.Name} - ${props.item.Price}`}</div>
+        <div onClick={() => buy()}>
+            <FontAwesomeIcon icon={props.item.Icon as IconProp} />
+            <span>
+                {`${props.item.Name} - ${props.item.Price}`}
+            </span>
+        </div>
     )
 }
 

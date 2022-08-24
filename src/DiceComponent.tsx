@@ -1,5 +1,7 @@
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import Dice, { DiceIcons } from './Dice';
+import Dice from './Dice';
 
 interface DiceComponentInterface {
     dice: Dice;
@@ -7,7 +9,7 @@ interface DiceComponentInterface {
 
 const DiceComponent = (props: DiceComponentInterface) => {
 
-    return <span className={`dice mx-1 ${DiceIcons[props.dice.Sides[props.dice.TopSide].Value]}`}></span>
+    return <span><FontAwesomeIcon icon={props.dice.getIcon() as IconProp} /></span>
 }
 
 export default DiceComponent;

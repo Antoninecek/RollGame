@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import './App.css';
 import BoardComponent from './BoardComponent';
 import Board from './Board';
 import { GenerateBaseNumericDice } from './Dice';
 import Shop, { ShopItem } from './Shop';
-import { StandardShopLevels } from './Configs';
+import GameConfig from './Configs';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
+library.add(fas);
 
 export interface BoardContextInterface {
     board: Board;
@@ -20,6 +24,16 @@ export interface BoardContextInterface {
 
 export const BoardContext = React.createContext<BoardContextInterface>({} as BoardContextInterface);
 
+type ShopReducerAction =
+    | { type: 'roll' };
+
+export const ShopReducer = (state: Shop, action: ShopReducerAction) => {
+    switch (action.type) {
+        case 'roll':
+            return { ...state };
+    }
+}
+
 function App() {
 
     const [board, setBoard] = useState<Board | null>(null);
@@ -28,15 +42,22 @@ function App() {
     const [passives, setPassives] = useState<ShopItem[]>([]);
     const [rolls, setRolls] = useState<number>(0);
 
+    const [config, setConfig] = useState<GameConfig>({} as GameConfig);
+
+    const [{ }, dispatch] = useReducer(ShopReducer, {} as Shop);
+
     useEffect(() => {
+        let config = new GameConfig();
+        config.Init();
+        setConfig(config);
         let dics = [];
         for (let i = 0; i < 11; i++) {
             dics.push(GenerateBaseNumericDice());
         }
         const board = new Board([...dics]);
         setBoard(board);
-        const shop = new Shop(StandardShopLevels);
-        shop.Items = shop.createItems(rolls, 10);
+        const shop = new Shop(config.ShopLevels);
+        shop.Items = shop.createItems(rolls, 10, config.ShopLevelItems);
         setShop(shop);
     }, [])
 
@@ -75,8 +96,12 @@ function App() {
     }
 
     const rollShop = () => {
-        let items: ShopItem[] = shop!.createItems(rolls, 10);
-        setShop({ ...shop!, Items: items })
+        let lvl = shop?.LevelIndex;
+        let shopik = shop!.changeLevelUp();
+        if (lvl !== shopik.LevelIndex) {
+            let items: ShopItem[] = shop!.createItems(rolls, 10, config?.ShopLevelItems);
+            setShop({ ...shopik, Items: items })
+        }
     }
 
     if (!board || !shop) return <div>Loading...</div>

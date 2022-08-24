@@ -1,27 +1,50 @@
-import { ShopLevelItems } from "./Configs";
 import { GetRandomInteger, IdGenerator, IDictionary } from "./Interfaces";
+
+export enum ShopItemType {
+    dice, diceFaceUpgrade, passiveRollUpgrade
+}
+
+export interface ShopLevelItemProbability {
+    item: ShopItemConfig;
+    probability: number;
+}
+
+export interface ShopItemConfig {
+    Name: string;
+    Type: ShopItemType;
+    Effects: Function[];
+    BasePrice: number;
+    BasePriceMultiplier: (basePrice: number, rolls: number) => number;
+    Icon: string;
+}
 
 export class Shop {
 
-    // Items: ShopItem[];
+    Items: ShopItem[];
     Level: string;
     Levels: string[];
+    LevelIndex: number;
 
     constructor(levels: string[]) {
         this.Level = levels[0];
+        this.LevelIndex = 0;
         this.Levels = levels;
         this.Items = [];
     }
 
-    set Items(items: ShopItem[]) { this.Items = items; }
-    get Items() { return this.Items };
+    changeLevelUp = (): Shop => {
+        if (this.LevelIndex === this.Levels.length - 1) return { ...this };
+        this.LevelIndex += 1;
+        this.Level = this.Levels[this.LevelIndex];
+        return { ...this };
+    }
 
-    createItems = (rolls: number, nItems: number): ShopItem[] => {
-        let items = ShopLevelItems[this.Level];
+    createItems = (rolls: number, nItems: number, items: IDictionary<ShopLevelItemProbability[]>): ShopItem[] => {
         let allItems: ShopItem[] = [];
-        for (let item of items) {
+        let levelItems = items[this.Level];
+        for (let item of levelItems) {
             for (let i = 0; i < item.probability; i++) {
-                let it = ShopItem.createInstance(item.item);
+                let it = new ShopItem(item.item);
                 it.setPrice(rolls);
                 allItems.push(it);
             }
@@ -38,19 +61,6 @@ export class Shop {
 
 }
 
-export interface ShopLevelItemProbability {
-    item: ShopItemConfig;
-    probability: number;
-}
-
-export interface ShopItemConfig {
-    Name: string;
-    Type: ShopItemType;
-    Effects: Function[];
-    BasePrice: number;
-    BasePriceMultiplier: (basePrice: number, rolls: number) => number;
-}
-
 export class ShopItem {
 
     Id: number = -1;
@@ -61,24 +71,32 @@ export class ShopItem {
     private BasePrice: number = 0;
     Multiplier: (basePrice: number, rolls: number) => number = (x, y) => 0;
     CanBuy: boolean = false;
+    Icon: string = '';
 
-    static createInstance = (config: ShopItemConfig): ShopItem => {
-        let item = new ShopItem();
-        item.Id = IdGenerator.generate();
-        item.Name = config.Name;
-        item.Type = config.Type;
-        item.Effects = config.Effects;
-        item.BasePrice = config.BasePrice;
-        item.Multiplier = config.BasePriceMultiplier;
-        item.CanBuy = true;
-        return item;
+    constructor(config: ShopItemConfig) {
+        this.Id = IdGenerator.generate();
+        this.Name = config.Name;
+        this.Type = config.Type;
+        this.Effects = config.Effects;
+        this.BasePrice = config.BasePrice;
+        this.Multiplier = config.BasePriceMultiplier;
+        this.CanBuy = true;
+        this.Icon = config.Icon;
     }
 
-    setPrice = (rolls: number) => this.Price = this.Multiplier(this.BasePrice, rolls);
-}
+    // static createInstance = (config: ShopItemConfig): ShopItem => {
+    //     let item = new ShopItem();
+    //     item.Id = IdGenerator.generate();
+    //     item.Name = config.Name;
+    //     item.Type = config.Type;
+    //     item.Effects = config.Effects;
+    //     item.BasePrice = config.BasePrice;
+    //     item.Multiplier = config.BasePriceMultiplier;
+    //     item.CanBuy = true;
+    //     return item;
+    // }
 
-export enum ShopItemType {
-    dice, diceFaceUpgrade, passiveRollUpgrade
+    setPrice = (rolls: number) => this.Price = this.Multiplier(this.BasePrice, rolls);
 }
 
 export default Shop;
