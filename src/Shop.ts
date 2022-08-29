@@ -24,18 +24,21 @@ export class Shop {
     Level: string;
     Levels: string[];
     LevelIndex: number;
+    RollPrice: number;
 
-    constructor(levels: string[]) {
+    constructor(levels: string[], baseRollPrice: number) {
         this.Level = levels[0];
         this.LevelIndex = 0;
         this.Levels = levels;
         this.Items = [];
+        this.RollPrice = baseRollPrice;
     }
 
-    changeLevelUp = (): Shop => {
+    changeLevelUp = (rolls: number): Shop => {
         if (this.LevelIndex === this.Levels.length - 1) return { ...this };
         this.LevelIndex += 1;
         this.Level = this.Levels[this.LevelIndex];
+        this.RollPrice *= rolls + 1;
         return { ...this };
     }
 
@@ -83,18 +86,6 @@ export class ShopItem {
         this.CanBuy = true;
         this.Icon = config.Icon;
     }
-
-    // static createInstance = (config: ShopItemConfig): ShopItem => {
-    //     let item = new ShopItem();
-    //     item.Id = IdGenerator.generate();
-    //     item.Name = config.Name;
-    //     item.Type = config.Type;
-    //     item.Effects = config.Effects;
-    //     item.BasePrice = config.BasePrice;
-    //     item.Multiplier = config.BasePriceMultiplier;
-    //     item.CanBuy = true;
-    //     return item;
-    // }
 
     setPrice = (rolls: number) => this.Price = this.Multiplier(this.BasePrice, rolls);
 }

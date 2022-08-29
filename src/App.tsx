@@ -56,7 +56,7 @@ function App() {
         }
         const board = new Board([...dics]);
         setBoard(board);
-        const shop = new Shop(config.ShopLevels);
+        const shop = new Shop(config.ShopLevels, 100);
         shop.Items = shop.createItems(rolls, 10, config.ShopLevelItems);
         setShop(shop);
     }, [])
@@ -97,7 +97,8 @@ function App() {
 
     const rollShop = () => {
         let lvl = shop?.LevelIndex;
-        let shopik = shop!.changeLevelUp();
+        setUserPoints(userPoints - shop!.RollPrice);
+        let shopik = shop!.changeLevelUp(rolls);
         if (lvl !== shopik.LevelIndex) {
             let items: ShopItem[] = shop!.createItems(rolls, 10, config?.ShopLevelItems);
             setShop({ ...shopik, Items: items })

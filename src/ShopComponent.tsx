@@ -1,6 +1,6 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Grid } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 import { BoardContext, BoardContextInterface } from './App';
 import { ShopItem } from './Shop';
@@ -21,16 +21,18 @@ const ShopComponent = () => {
 
     const boardContext = useContext(BoardContext)
 
-    let id: number = 1;
-
     return (
         <Grid container sx={style}>
             <Grid item>
                 {boardContext?.shop.Items.map(x => <ShopItemComponent key={x.Id} item={x} />)}
             </Grid>
             <Grid item>
-                <div>{boardContext.shop.Level}</div>
-                <button onClick={() => boardContext.rollShop()}>roll shop</button>
+                <Typography variant='h4'>lvl:{boardContext.shop.Level}</Typography>
+                <Button onClick={() => {
+                    if (boardContext.userPoints > boardContext.shop.RollPrice) {
+                        boardContext.rollShop();
+                    }
+                }}>roll shop {boardContext.shop.RollPrice}</Button>
             </Grid>
         </Grid>
     )
